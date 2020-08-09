@@ -9,14 +9,10 @@ class MainSearch extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       child: Container(
+        margin: EdgeInsets.all(10),
         padding: EdgeInsets.all(10),
         decoration: BoxDecoration(
-          boxShadow: [
-            new BoxShadow(
-              color: Colors.grey,
-              blurRadius: 20.0,
-            ),
-          ],
+          borderRadius: BorderRadius.all(Radius.circular(20)),
           color: Colors.white,
         ),
         child: Container(
@@ -38,18 +34,7 @@ class MainSearch extends StatelessWidget {
                     TextField(
                       cursorColor: Colors.tealAccent,
                       decoration: InputDecoration(
-                        hintText: "Location 1",
-                        focusedBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Colors.tealAccent,
-                          ),
-                        ),
-                      ),
-                    ),
-                    TextField(
-                      cursorColor: Colors.tealAccent,
-                      decoration: InputDecoration(
-                        hintText: "Location 2",
+                        hintText: "Where would you like to go?",
                         focusedBorder: UnderlineInputBorder(
                           borderSide: BorderSide(
                             color: Colors.tealAccent,
