@@ -1,9 +1,35 @@
 import 'package:flutter/material.dart';
 
-class MainSearch extends StatelessWidget {
+class MainSearch extends StatefulWidget {
   const MainSearch({
     Key key,
   }) : super(key: key);
+
+  @override
+  _MainSearchState createState() => _MainSearchState();
+}
+
+class _MainSearchState extends State<MainSearch> {
+  final myController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    myController.addListener(_printLatestValue);
+  }
+
+  @override
+  void dispose() {
+    // Clean up the controller when the widget is removed from the widget tree.
+    // This also removes the _printLatestValue listener.
+    myController.dispose();
+    super.dispose();
+  }
+
+  //Textfield now printing keystrokes
+  _printLatestValue() {
+    print("Text field: ${myController.text}");
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,6 +58,7 @@ class MainSearch extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     TextField(
+                      controller: myController,
                       cursorColor: Colors.tealAccent,
                       decoration: InputDecoration(
                         hintText: "Where would you like to go?",
