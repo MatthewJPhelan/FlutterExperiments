@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_complete_guide/models/global.dart';
 import 'package:flutter_complete_guide/models/restaurant.dart';
 import 'package:flutter_complete_guide/screens/restaurant_overview.dart';
+import 'package:flutter_complete_guide/widgets/LocationRating/location_rating_stars.dart';
 
 class LocationCards extends StatefulWidget {
   @override
@@ -24,7 +25,7 @@ class _LocationCardsState extends State<LocationCards> {
   List<Restaurant> getRestaurants() {
     List<Restaurant> restaurants = [];
     NetworkImage profilePic = new NetworkImage(
-        "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=CmRaAAAAsDE99D0L5Bbbe3caQnG1vTD9Bwc_Vp81UdRD2Io_GKv-BU1Lx0jBcNBGPNAL3MX0Wjl9Hqdv7-RYSMWYTZDgCFgV8BuASOPZVsqER316ZN2bw_uTf3YVoQeULMU_RkQOEhAXWh5ArbPjUCfcpJ8jemqXGhSVEUC7yDxItH1i0OiPEiXj24VHhA&key=AIzaSyB_jaXXdiohcdcMQBTu37tMGjrDyCFa6P8");
+        "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=CmRaAAAAsDE99D0L5Bbbe3caQnG1vTD9Bwc_Vp81UdRD2Io_GKv-BU1Lx0jBcNBGPNAL3MX0Wjl9Hqdv7-RYSMWYTZDgCFgV8BuASOPZVsqER316ZN2bw_uTf3YVoQeULMU_RkQOEhAXWh5ArbPjUCfcpJ8jemqXGhSVEUC7yDxItH1i0OiPEiXj24VHhA&key=API_KEY");
     Restaurant localRestaurant = new Restaurant(
         placeId: "ChIJsXHaDVgPdkgRgg8HuJD_4gU",
         icon:
@@ -49,7 +50,7 @@ class _LocationCardsState extends State<LocationCards> {
     restaurants.add(localRestaurant);
 
     NetworkImage profilePic1 = new NetworkImage(
-        "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=CmRaAAAA1v3mcSnUe44WGigF0BGAsJ-iozMKyfLGQ7FM4ffbDYQinUD5ubhv6l3YBXW7eH-x9QM6Mw8ApP0bVIyNFLjIh_E3SXaK-3vXYdJRNun3DlyAdGY4QG-x8cgLDqJMt6kGEhBujxnk6p0Jwp7TZYVO823-GhRpW4uNLILXzFlY4LDdN8bD-Jpl9Q&key=AIzaSyB_jaXXdiohcdcMQBTu37tMGjrDyCFa6P8");
+        "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=CmRaAAAA1v3mcSnUe44WGigF0BGAsJ-iozMKyfLGQ7FM4ffbDYQinUD5ubhv6l3YBXW7eH-x9QM6Mw8ApP0bVIyNFLjIh_E3SXaK-3vXYdJRNun3DlyAdGY4QG-x8cgLDqJMt6kGEhBujxnk6p0Jwp7TZYVO823-GhRpW4uNLILXzFlY4LDdN8bD-Jpl9Q&key=API_KEY");
     Restaurant localRestaurant1 = new Restaurant(
         placeId: "ChIJMUTWAFgPdkgRxbvLXcdtdAc",
         icon:
@@ -74,7 +75,7 @@ class _LocationCardsState extends State<LocationCards> {
     restaurants.add(localRestaurant1);
 
     NetworkImage profilePic2 = new NetworkImage(
-        "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=CmRaAAAAX6Y8y5fz_5f0pjACYUV3SeefXWfehEDgAPWLCCA66bhKSfgssoBbJNBQnJmkWA9tUcP76_tMKjU0rkEGQydpu61sL9ggeu2PJvVq7WEx6edrIxFFa9sEyyJBdpjm8qvOEhAXMW0FL9Hlz7r6ade2i2I4GhTdvRlnWdVux40xtLd9qDGy2f_pvg&key=AIzaSyB_jaXXdiohcdcMQBTu37tMGjrDyCFa6P8");
+        "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=CmRaAAAAX6Y8y5fz_5f0pjACYUV3SeefXWfehEDgAPWLCCA66bhKSfgssoBbJNBQnJmkWA9tUcP76_tMKjU0rkEGQydpu61sL9ggeu2PJvVq7WEx6edrIxFFa9sEyyJBdpjm8qvOEhAXMW0FL9Hlz7r6ade2i2I4GhTdvRlnWdVux40xtLd9qDGy2f_pvg&key=API_KEY");
     Restaurant localRestaurant2 = new Restaurant(
         placeId: "ChIJ1wBIBPgFdkgRqa_yf4iihGA",
         icon:
@@ -151,7 +152,8 @@ Widget restaurantCard(Restaurant restaurant, BuildContext context) {
                   Text(
                     restaurant.cuisine,
                     style: restaurantCardSubTitleStyle,
-                  )
+                  ),
+                  LocationRatingStars(restaurant.rating)
                 ],
               ),
             )

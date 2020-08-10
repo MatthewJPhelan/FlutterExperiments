@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_complete_guide/models/global.dart';
 import 'package:flutter_complete_guide/models/restaurant.dart';
+import 'package:flutter_complete_guide/widgets/LocationRating/location_rating_stars.dart';
 
 class TopLevelLocation extends StatelessWidget {
   final Restaurant restaurant;
@@ -31,6 +32,7 @@ class TopLevelLocation extends StatelessWidget {
                   restaurant.cuisine,
                   style: restaurantOverviewSubTitleStyle,
                 ),
+                LocationRatingStars(restaurant.rating)
               ],
             ),
           ),
