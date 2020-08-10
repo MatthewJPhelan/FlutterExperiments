@@ -52,6 +52,7 @@ flutter:
   assets:
   #   - assets\fonts\MuseoModerno-Medium.ttf
     - assets/images/walkingTogether.jpg
+    - assets/images/burrata.jpg
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
@@ -69,6 +70,13 @@ flutter:
     - family: MuseoModerno
       fonts:
         - asset: fonts/MuseoModerno-Medium.ttf
+    - family: Roboto
+      fonts:
+        - asset: fonts/Roboto/Roboto-Regular.ttf
+        # - asset: fonts/Roboto/Roboto-Bold.ttf
+        #   weight: 700
+        # - asset: fonts/Roboto/Roboto-Thin.ttf
+        #   weight: 100
   #       - asset: fonts/Schyler-Italic.ttf
   #         style: italic
   #   - family: Trajan Pro

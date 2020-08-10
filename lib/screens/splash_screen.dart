@@ -39,6 +39,7 @@ class _SplashScreenState extends State<SplashScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
+        color: Colors.grey[850],
         child: Stack(
           fit: StackFit.expand,
           alignment: Alignment.center,
@@ -82,7 +83,7 @@ class _SplashScreenState extends State<SplashScreen> {
   FittedBox splashImage() {
     return FittedBox(
       child: Opacity(
-        opacity: 0.9,
+        opacity: 0.6,
         child: Image.asset('assets/images/walkingTogether.jpg'),
       ),
       fit: BoxFit.cover,
