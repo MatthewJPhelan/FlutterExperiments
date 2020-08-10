@@ -34,25 +34,25 @@ class _MainSearchState extends State<MainSearch> {
   @override
   Widget build(BuildContext context) {
     return Container(
+      margin: EdgeInsets.symmetric(
+        horizontal: 32,
+        vertical: 40,
+      ),
       child: Container(
-        margin: EdgeInsets.symmetric(
-          horizontal: 16,
-          vertical: 32,
-        ),
-        padding: EdgeInsets.symmetric(horizontal: 8),
+        padding: EdgeInsets.only(left: 8, right: 16),
         decoration: BoxDecoration(
+          border: Border.all(color: Colors.grey[800]),
           borderRadius: BorderRadius.all(Radius.circular(8)),
-          color: Colors.white,
         ),
         child: Container(
           child: Row(
             children: [
               Container(
-                padding: EdgeInsets.symmetric(horizontal: 8),
+                padding: EdgeInsets.symmetric(horizontal: 12),
                 child: Icon(
                   Icons.search,
-                  color: Colors.grey[700],
-                  size: 24.0,
+                  color: Colors.grey[800],
+                  size: 16.0,
                 ),
               ),
               Expanded(

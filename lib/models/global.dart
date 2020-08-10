@@ -6,11 +6,26 @@ TextStyle restaurantCardTitleStyle = new TextStyle(
   color: Colors.white,
 );
 
+TextStyle restaurantOverviewTitleStyle = new TextStyle(
+  fontFamily: 'MuseoModerno',
+  fontSize: 16,
+  color: Colors.grey[850],
+  fontWeight: FontWeight.w100,
+);
+
 TextStyle restaurantCardSubTitleStyle = new TextStyle(
   fontFamily: 'Roboto',
   fontSize: 13,
   fontStyle: FontStyle.italic,
   color: Colors.white,
+);
+
+TextStyle restaurantOverviewSubTitleStyle = new TextStyle(
+  fontFamily: 'Roboto',
+  fontSize: 12,
+  fontStyle: FontStyle.italic,
+  color: Colors.black,
+  fontWeight: FontWeight.w100,
 );
 
 TextStyle statusUnavailableStyle = new TextStyle(

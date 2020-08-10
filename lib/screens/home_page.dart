@@ -30,6 +30,8 @@ class _HomePageState extends State<HomePage> {
                 zoom: 13.5,
               ),
               myLocationEnabled: true,
+              zoomControlsEnabled: false,
+              myLocationButtonEnabled: false,
             ),
             MainSearch(),
             LocationCards(),
