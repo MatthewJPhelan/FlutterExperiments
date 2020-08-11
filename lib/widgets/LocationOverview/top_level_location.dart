@@ -8,17 +8,22 @@ class TopLevelLocation extends StatelessWidget {
 
   TopLevelLocation({this.restaurant});
 
+  String isOpen(bool openNow) {
+    return openNow ? "Open Now" : "Closed Now";
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 16),
-      padding: EdgeInsets.symmetric(vertical: 16),
+      padding: EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
         border: Border(
           bottom: BorderSide(color: Colors.grey[200]),
         ),
       ),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Container(
             child: Column(
@@ -36,6 +41,18 @@ class TopLevelLocation extends StatelessWidget {
               ],
             ),
           ),
+          Container(
+            padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+            margin: EdgeInsets.only(right: 8),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8),
+              color: Colors.blueGrey[900],
+            ),
+            child: Text(
+              isOpen(restaurant.openNow),
+              style: restaurantCardSubTitleStyle,
+            ),
+          )
         ],
       ),
     );

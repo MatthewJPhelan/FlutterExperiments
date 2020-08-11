@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class Restaurant {
   String placeId;
-  String icon;
+  NetworkImage icon;
   String name;
   int priceLevel;
   bool openNow;

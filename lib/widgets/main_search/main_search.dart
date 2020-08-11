@@ -41,7 +41,7 @@ class _MainSearchState extends State<MainSearch> {
       child: Container(
         padding: EdgeInsets.only(left: 8, right: 16),
         decoration: BoxDecoration(
-          border: Border.all(color: Colors.grey[800]),
+          color: Colors.white,
           borderRadius: BorderRadius.all(Radius.circular(8)),
         ),
         child: Container(
@@ -52,7 +52,7 @@ class _MainSearchState extends State<MainSearch> {
                 child: Icon(
                   Icons.search,
                   color: Colors.grey[800],
-                  size: 16.0,
+                  size: 24.0,
                 ),
               ),
               Expanded(
@@ -62,7 +62,11 @@ class _MainSearchState extends State<MainSearch> {
                     TextField(
                       controller: myController,
                       decoration: InputDecoration(
-                        hintText: "Where would you like to go?",
+                        hintText: "Enter an address or landmark...",
+                        hintStyle: TextStyle(
+                            fontSize: 14.0,
+                            color: Colors.grey[300],
+                            fontFamily: 'Roboto'),
                         border: InputBorder.none,
                       ),
                     ),

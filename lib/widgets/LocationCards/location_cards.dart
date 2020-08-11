@@ -26,10 +26,12 @@ class _LocationCardsState extends State<LocationCards> {
     List<Restaurant> restaurants = [];
     NetworkImage profilePic = new NetworkImage(
         "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=CmRaAAAAsDE99D0L5Bbbe3caQnG1vTD9Bwc_Vp81UdRD2Io_GKv-BU1Lx0jBcNBGPNAL3MX0Wjl9Hqdv7-RYSMWYTZDgCFgV8BuASOPZVsqER316ZN2bw_uTf3YVoQeULMU_RkQOEhAXWh5ArbPjUCfcpJ8jemqXGhSVEUC7yDxItH1i0OiPEiXj24VHhA&key=API_KEY");
+    NetworkImage icon = new NetworkImage(
+        "https://maps.gstatic.com/mapfiles/place_api/icons/restaurant-71.png");
+
     Restaurant localRestaurant = new Restaurant(
         placeId: "ChIJsXHaDVgPdkgRgg8HuJD_4gU",
-        icon:
-            "https://maps.gstatic.com/mapfiles/place_api/icons/restaurant-71.png",
+        icon: icon,
         name: "The Earlsfield Gastropub",
         priceLevel: 2,
         openNow: true,
@@ -51,10 +53,12 @@ class _LocationCardsState extends State<LocationCards> {
 
     NetworkImage profilePic1 = new NetworkImage(
         "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=CmRaAAAA1v3mcSnUe44WGigF0BGAsJ-iozMKyfLGQ7FM4ffbDYQinUD5ubhv6l3YBXW7eH-x9QM6Mw8ApP0bVIyNFLjIh_E3SXaK-3vXYdJRNun3DlyAdGY4QG-x8cgLDqJMt6kGEhBujxnk6p0Jwp7TZYVO823-GhRpW4uNLILXzFlY4LDdN8bD-Jpl9Q&key=API_KEY");
+    NetworkImage icon1 = new NetworkImage(
+        "https://maps.gstatic.com/mapfiles/place_api/icons/restaurant-71.png");
+
     Restaurant localRestaurant1 = new Restaurant(
         placeId: "ChIJMUTWAFgPdkgRxbvLXcdtdAc",
-        icon:
-            "https://maps.gstatic.com/mapfiles/place_api/icons/restaurant-71.png",
+        icon: icon1,
         name: "Burrito Mex",
         priceLevel: 1,
         openNow: true,
@@ -76,10 +80,11 @@ class _LocationCardsState extends State<LocationCards> {
 
     NetworkImage profilePic2 = new NetworkImage(
         "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=CmRaAAAAX6Y8y5fz_5f0pjACYUV3SeefXWfehEDgAPWLCCA66bhKSfgssoBbJNBQnJmkWA9tUcP76_tMKjU0rkEGQydpu61sL9ggeu2PJvVq7WEx6edrIxFFa9sEyyJBdpjm8qvOEhAXMW0FL9Hlz7r6ade2i2I4GhTdvRlnWdVux40xtLd9qDGy2f_pvg&key=API_KEY");
+    NetworkImage icon2 = new NetworkImage(
+        "https://maps.gstatic.com/mapfiles/place_api/icons/restaurant-71.png");
     Restaurant localRestaurant2 = new Restaurant(
         placeId: "ChIJ1wBIBPgFdkgRqa_yf4iihGA",
-        icon:
-            "https://maps.gstatic.com/mapfiles/place_api/icons/restaurant-71.png",
+        icon: icon2,
         name: "Donburi & Co",
         priceLevel: 1,
         openNow: false,
@@ -92,6 +97,33 @@ class _LocationCardsState extends State<LocationCards> {
         profilePic: profilePic2,
         cuisine: 'Restaurant');
     restaurants.add(localRestaurant2);
+
+    NetworkImage profilePic3 = new NetworkImage(
+        "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=CmRaAAAAsuu79FjqqhCGkWbtWb8KdOxP18PE6469BU_SQ52SLt3YhgDzIYLUzJSK9ZuVcQbrHoS5VmSFBIgJfI9MK9ORqTviskSIuqGL3tAuWa_8xn1PORbiXKyhVR1T0Lbt3jy7EhDNbvTYBCMWl3I0_XGL3vacGhQctWIaeFIx17yQqMdWf6Mb9zlKDQ&key=API_KEY");
+    NetworkImage icon3 = new NetworkImage(
+        "https://maps.gstatic.com/mapfiles/place_api/icons/restaurant-71.png");
+    Restaurant localRestaurant3 = new Restaurant(
+        placeId: "ChIJU15bpvgFdkgR0-hny7Lhvf4",
+        icon: icon3,
+        name: "Leather Bottle",
+        priceLevel: 2,
+        openNow: true,
+        rating: 4.1,
+        types: [
+          "park",
+          "bar",
+          "restaurant",
+          "food",
+          "point_of_interest",
+          "establishment"
+        ],
+        phoneNum: '02081234567',
+        vicinity: "538 Garratt Ln, London",
+        lat: 51.4368389,
+        lng: -0.1871222,
+        profilePic: profilePic3,
+        cuisine: 'Restaurant');
+    restaurants.add(localRestaurant3);
 
     return restaurants;
   }
@@ -119,7 +151,7 @@ Widget restaurantCard(Restaurant restaurant, BuildContext context) {
       children: <Widget>[
         Container(
           width: 280,
-          margin: EdgeInsets.only(right: 20),
+          margin: EdgeInsets.only(right: 8),
           decoration: BoxDecoration(
             image: DecorationImage(
               image: restaurant.profilePic,
@@ -132,7 +164,7 @@ Widget restaurantCard(Restaurant restaurant, BuildContext context) {
         Row(
           children: <Widget>[
             Container(
-              width: 240,
+              width: 220,
               padding: EdgeInsets.all(10),
               decoration: BoxDecoration(
                 gradient: LinearGradient(colors: [
@@ -156,7 +188,26 @@ Widget restaurantCard(Restaurant restaurant, BuildContext context) {
                   LocationRatingStars(restaurant.rating)
                 ],
               ),
-            )
+            ),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Container(
+                  margin: EdgeInsets.only(bottom: 16),
+                  padding: EdgeInsets.all(10),
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: Colors.red,
+                    borderRadius: BorderRadius.circular(50),
+                  ),
+                  child: Image(
+                    color: Colors.white,
+                    image: restaurant.icon,
+                  ),
+                ),
+              ],
+            ),
           ],
         ),
         //   child: Stack(

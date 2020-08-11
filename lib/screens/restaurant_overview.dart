@@ -1,11 +1,37 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_complete_guide/models/global.dart';
 import 'package:flutter_complete_guide/models/restaurant.dart';
+import 'package:flutter_complete_guide/widgets/LocationOverview/location_show_more.dart';
+import 'package:flutter_complete_guide/widgets/LocationOverview/location_types.dart';
 import 'package:flutter_complete_guide/widgets/LocationOverview/top_level_location.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class RestaurantOverview extends StatelessWidget {
   final Restaurant restaurant;
+  LatLng _center;
 
-  RestaurantOverview({this.restaurant});
+  RestaurantOverview({this.restaurant}) {
+    _center = LatLng(restaurant.lat, restaurant.lng);
+  }
+
+  GoogleMapController mapController;
+
+  void _onMapCreated(GoogleMapController controller) {
+    mapController = controller;
+  }
+
+  Set<Marker> getMarkers() {
+    MarkerId _markerId = new MarkerId(restaurant.placeId);
+    Marker _marker = new Marker(
+      markerId: _markerId,
+      position: _center,
+      alpha: 0.8,
+    );
+    Set<Marker> _markers = new Set<Marker>();
+    _markers.add(_marker);
+
+    return _markers;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +49,6 @@ class RestaurantOverview extends StatelessWidget {
                       Color.fromRGBO(0, 0, 0, 0.6),
                       Color.fromRGBO(0, 0, 0, 0),
                     ]),
-                    borderRadius: BorderRadius.all(Radius.circular(8)),
                     image: DecorationImage(
                       image: restaurant.profilePic,
                       fit: BoxFit.cover,
@@ -41,9 +66,70 @@ class RestaurantOverview extends StatelessWidget {
                     ),
                   ),
                 ),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Container(
+                      margin: EdgeInsets.only(top: 180, left: 320),
+                      padding: EdgeInsets.all(10),
+                      height: 40,
+                      decoration: BoxDecoration(
+                        color: Colors.red,
+                        borderRadius: BorderRadius.circular(50),
+                      ),
+                      child: Image(
+                        color: Colors.white,
+                        image: restaurant.icon,
+                      ),
+                    ),
+                  ],
+                ),
               ],
             ),
-            TopLevelLocation(restaurant: restaurant),
+            Expanded(
+              child: ListView(
+                children: <Widget>[
+                  TopLevelLocation(restaurant: restaurant),
+                  LocationTypes(types: restaurant.types),
+                  ExpandableText(
+                      "Lorem ipsum, or lipsum as it is sometimes known, is dummy text used in laying out print, graphic or web designs. The passage is attributed to an unknown typesetter in the 15th century who is thought to have scrambled parts of Cicero's De Finibus Bonorum et Malorum for use in a type specimen book."),
+                  Container(
+                    margin: EdgeInsets.only(left: 16.0, bottom: 8),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          margin: EdgeInsets.only(left: 8),
+                          child: Text(
+                            "Adress",
+                            style: locationTypeListTitleStyle,
+                          ),
+                        ),
+                        Container(
+                          margin: EdgeInsets.symmetric(vertical: 8),
+                          child: Text(restaurant.vicinity),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    height: 230,
+                    child: GoogleMap(
+                      onMapCreated: _onMapCreated,
+                      initialCameraPosition: CameraPosition(
+                        target: _center,
+                        zoom: 14.5,
+                      ),
+                      myLocationEnabled: true,
+                      zoomControlsEnabled: false,
+                      myLocationButtonEnabled: false,
+                      markers: getMarkers(),
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ],
         ),
       ),
