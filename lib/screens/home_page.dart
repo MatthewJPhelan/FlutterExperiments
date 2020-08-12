@@ -1,6 +1,5 @@
 import 'dart:async';
-import 'dart:typed_data';
-
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_complete_guide/widgets/LocationCards/location_cards.dart';
@@ -14,11 +13,15 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  Future _future;
+
+  Future<String> loadString() async =>
+      await rootBundle.loadString('assets/data.json');
+  List<Marker> allMarkers = [];
+
   GoogleMapController mapController;
   StreamSubscription _locationSubscription;
   Location _locationTracker = Location();
-  // Marker marker;
-  // Circle circle;
 
   static final CameraPosition initialLocation = CameraPosition(
     target: const LatLng(51.442928, -0.183450),
@@ -27,6 +30,7 @@ class _HomePageState extends State<HomePage> {
 
   void initState() {
     super.initState();
+    _future = loadString();
     getCurrentLocation();
   }
 
@@ -75,12 +79,28 @@ class _HomePageState extends State<HomePage> {
       home: Scaffold(
         body: Stack(
           children: <Widget>[
-            GoogleMap(
-              onMapCreated: _onMapCreated,
-              initialCameraPosition: initialLocation,
-              myLocationEnabled: true,
-              zoomControlsEnabled: false,
-              myLocationButtonEnabled: false,
+            FutureBuilder(
+              future: _future,
+              builder: (context, AsyncSnapshot snapshot) {
+                if (!snapshot.hasData) {
+                  return CircularProgressIndicator();
+                }
+                List<dynamic> parsedJson = jsonDecode(snapshot.data);
+                allMarkers = parsedJson.map((element) {
+                  return Marker(
+                      markerId: MarkerId(element['id']),
+                      position: LatLng(element['lat'], element['lng']));
+                }).toList();
+
+                return GoogleMap(
+                  initialCameraPosition: initialLocation,
+                  markers: Set.from(allMarkers),
+                  onMapCreated: _onMapCreated,
+                  myLocationEnabled: true,
+                  zoomControlsEnabled: false,
+                  myLocationButtonEnabled: false,
+                );
+              },
             ),
             MainSearch(),
             LocationCards(),

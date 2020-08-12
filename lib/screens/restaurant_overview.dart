@@ -1,12 +1,16 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_complete_guide/models/global.dart';
 import 'package:flutter_complete_guide/models/restaurant.dart';
 import 'package:flutter_complete_guide/widgets/LocationOverview/location_show_more.dart';
 import 'package:flutter_complete_guide/widgets/LocationOverview/location_types.dart';
 import 'package:flutter_complete_guide/widgets/LocationOverview/top_level_location.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:location/location.dart';
 
-class RestaurantOverview extends StatelessWidget {
+class RestaurantOverview extends StatefulWidget {
   final Restaurant restaurant;
   LatLng _center;
 
@@ -14,17 +18,60 @@ class RestaurantOverview extends StatelessWidget {
     _center = LatLng(restaurant.lat, restaurant.lng);
   }
 
+  @override
+  _RestaurantOverviewState createState() => _RestaurantOverviewState();
+}
+
+class _RestaurantOverviewState extends State<RestaurantOverview> {
   GoogleMapController mapController;
+
+  StreamSubscription _locationSubscription;
+  Location _locationTracker = Location();
 
   void _onMapCreated(GoogleMapController controller) {
     mapController = controller;
   }
 
+  CameraPosition getCameraPosition(newLocalData) {
+    return CameraPosition(
+        bearing: 192.8,
+        target: LatLng(newLocalData.latitude, newLocalData.longitude),
+        tilt: 0,
+        zoom: 15);
+  }
+
+  void getCurrentLocation() async {
+    try {
+      if (_locationSubscription != null) {
+        _locationSubscription.cancel();
+      }
+
+      _locationSubscription =
+          _locationTracker.onLocationChanged().listen((newLocalData) {
+        if (mapController != null) {
+          mapController.animateCamera(
+              CameraUpdate.newCameraPosition(getCameraPosition(newLocalData)));
+        }
+      });
+    } on PlatformException catch (e) {
+      if (e.code == 'PERMISSION DENIED') {
+        debugPrint("Permission Denied");
+      }
+    }
+  }
+
+  void dispose() {
+    if (_locationSubscription != null) {
+      _locationSubscription.cancel();
+    }
+    super.dispose();
+  }
+
   Set<Marker> getMarkers() {
-    MarkerId _markerId = new MarkerId(restaurant.placeId);
+    MarkerId _markerId = new MarkerId(widget.restaurant.placeId);
     Marker _marker = new Marker(
       markerId: _markerId,
-      position: _center,
+      position: widget._center,
       alpha: 0.8,
     );
     Set<Marker> _markers = new Set<Marker>();
@@ -50,7 +97,7 @@ class RestaurantOverview extends StatelessWidget {
                       Color.fromRGBO(0, 0, 0, 0),
                     ]),
                     image: DecorationImage(
-                      image: restaurant.profilePic,
+                      image: widget.restaurant.profilePic,
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -80,7 +127,7 @@ class RestaurantOverview extends StatelessWidget {
                       ),
                       child: Image(
                         color: Colors.white,
-                        image: restaurant.icon,
+                        image: widget.restaurant.icon,
                       ),
                     ),
                   ],
@@ -90,8 +137,8 @@ class RestaurantOverview extends StatelessWidget {
             Expanded(
               child: ListView(
                 children: <Widget>[
-                  TopLevelLocation(restaurant: restaurant),
-                  LocationTypes(types: restaurant.types),
+                  TopLevelLocation(restaurant: widget.restaurant),
+                  LocationTypes(types: widget.restaurant.types),
                   ExpandableText(
                       "Lorem ipsum, or lipsum as it is sometimes known, is dummy text used in laying out print, graphic or web designs. The passage is attributed to an unknown typesetter in the 15th century who is thought to have scrambled parts of Cicero's De Finibus Bonorum et Malorum for use in a type specimen book."),
                   Container(
@@ -108,7 +155,7 @@ class RestaurantOverview extends StatelessWidget {
                         ),
                         Container(
                           margin: EdgeInsets.symmetric(vertical: 8),
-                          child: Text(restaurant.vicinity),
+                          child: Text(widget.restaurant.vicinity),
                         ),
                       ],
                     ),
@@ -118,7 +165,7 @@ class RestaurantOverview extends StatelessWidget {
                     child: GoogleMap(
                       onMapCreated: _onMapCreated,
                       initialCameraPosition: CameraPosition(
-                        target: _center,
+                        target: widget._center,
                         zoom: 14.5,
                       ),
                       myLocationEnabled: true,
