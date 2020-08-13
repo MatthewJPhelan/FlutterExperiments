@@ -15,7 +15,7 @@ class RestaurantOverview extends StatefulWidget {
   LatLng _center;
 
   RestaurantOverview({this.restaurant}) {
-    _center = LatLng(restaurant.lat, restaurant.lng);
+    _center = restaurant.marker.position;
   }
 
   @override

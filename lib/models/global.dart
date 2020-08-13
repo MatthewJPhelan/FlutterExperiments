@@ -15,7 +15,7 @@ TextStyle restaurantOverviewTitleStyle = new TextStyle(
 
 TextStyle restaurantCardSubTitleStyle = new TextStyle(
   fontFamily: 'Roboto',
-  fontSize: 12,
+  fontSize: 10,
   fontStyle: FontStyle.italic,
   color: Colors.white,
 );

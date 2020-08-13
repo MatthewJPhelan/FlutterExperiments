@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class Restaurant {
   String placeId;
@@ -10,8 +11,7 @@ class Restaurant {
   List<String> types;
   String phoneNum;
   String vicinity;
-  double lat;
-  double lng;
+  Marker marker;
   NetworkImage profilePic;
   String cuisine;
 
@@ -25,8 +25,7 @@ class Restaurant {
       this.types,
       this.phoneNum,
       this.vicinity,
-      this.lat,
-      this.lng,
+      this.marker,
       this.profilePic,
       this.cuisine});
 }
