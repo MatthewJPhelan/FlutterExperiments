@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_complete_guide/screens/splash_screen.dart';
+import 'package:Convene/screens/splash_screen.dart';
 
 void main() => runApp(MyApp());
 

@@ -1,18 +1,13 @@
 import 'dart:convert';
 import 'dart:math';
+import 'package:Convene/services/locaiton_service.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
-import 'package:flutter_complete_guide/models/restaurant.dart';
+import 'package:Convene/models/restaurant.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:location/location.dart';
 
 class RestaurantsService {
-  Future<LocationData> getCurrentLocation() async {
-    Location location = Location();
-    LocationData _locationData = await location.getLocation();
-
-    return _locationData;
-  }
+  LocationService _restaurantsService = new LocationService();
 
   LatLng calculateMiddlePoint(double currentLat, double currentLng,
       double searchedLat, double searchedLng) {
@@ -29,9 +24,9 @@ class RestaurantsService {
 
   Future<LatLng> getInitalLocation(LatLng currentLocation,
       [LatLng searchedLocation]) async {
-    var location = await getCurrentLocation();
-    double currentLat = location.latitude;
-    double currentLng = location.longitude;
+    //var location = await _restaurantsService.getCurrentLocation();
+    double currentLat = currentLocation.latitude;
+    double currentLng = currentLocation.longitude;
 
     if (searchedLocation != null) {
       double searchedLat = searchedLocation.latitude;
@@ -48,11 +43,8 @@ class RestaurantsService {
       [LatLng searchedLocation]) async {
     final location = await getInitalLocation(currentLocation, searchedLocation);
 
-    double lat = location.latitude;
-    double lng = location.longitude;
-
     final response = await http.get(
-        "https://maps.googleapis.com/maps/api/place/nearbysearch/json?key=API_KEY&location=${lat},${lng}&rankby=distance&keyword=restaurant");
+        "https://maps.googleapis.com/maps/api/place/nearbysearch/json?key=API_KEY&location=${location.latitude},${location.longitude}&rankby=distance&keyword=restaurant");
 
     if (response.statusCode == 200) {
       final Map<String, dynamic> data = json.decode(response.body);

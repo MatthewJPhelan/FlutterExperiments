@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_complete_guide/models/global.dart';
-import 'package:flutter_complete_guide/models/restaurant.dart';
-import 'package:flutter_complete_guide/widgets/LocationRating/location_rating_stars.dart';
+import 'package:Convene/models/global.dart';
+import 'package:Convene/models/restaurant.dart';
+import 'package:Convene/widgets/LocationRating/location_rating_stars.dart';
 
 class TopLevelLocation extends StatelessWidget {
   final Restaurant restaurant;
@@ -33,9 +33,12 @@ class TopLevelLocation extends StatelessWidget {
                   restaurant.name,
                   style: restaurantOverviewTitleStyle,
                 ),
-                Text(
-                  restaurant.cuisine,
-                  style: restaurantOverviewSubTitleStyle,
+                Container(
+                  margin: EdgeInsets.only(top: 4),
+                  child: Text(
+                    restaurant.cuisine,
+                    style: restaurantOverviewSubTitleStyle,
+                  ),
                 ),
                 LocationRatingStars(restaurant.rating)
               ],

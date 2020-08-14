@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_complete_guide/models/global.dart';
+import 'package:Convene/models/global.dart';
 
 class LocationTypes extends StatelessWidget {
   final List<String> types;

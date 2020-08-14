@@ -1,9 +1,10 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_complete_guide/models/restaurant.dart';
-import 'package:flutter_complete_guide/widgets/LocationCards/location_cards.dart';
-import 'package:flutter_complete_guide/widgets/main_search/main_search.dart';
+import 'package:Convene/models/global.dart';
+import 'package:Convene/models/restaurant.dart';
+import 'package:Convene/widgets/LocationCards/location_cards.dart';
+import 'package:Convene/widgets/main_search/main_search.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 
@@ -11,9 +12,14 @@ class HomePage extends StatefulWidget {
   final List<Restaurant> restaurants;
   final LatLng intialLocation;
   final bool followUser;
+  final String searchedDescription;
   List<Marker> allMarkers = [];
 
-  HomePage({this.restaurants, this.intialLocation, this.followUser: true}) {
+  HomePage(
+      {this.restaurants,
+      this.intialLocation,
+      this.followUser: true,
+      this.searchedDescription: ''}) {
     restaurants.forEach((element) {
       allMarkers.add(element.marker);
     });
@@ -85,10 +91,49 @@ class _HomePageState extends State<HomePage> {
     super.dispose();
   }
 
+  Widget _getTopThird() {
+    if (widget.followUser) {
+      return MainSearch();
+    } else {
+      return Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(colors: [
+            Color.fromRGBO(0, 0, 0, 0.8),
+            Color.fromRGBO(0, 0, 0, 0),
+          ], begin: Alignment.topCenter, end: Alignment.bottomCenter),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            GestureDetector(
+              onTap: () => Navigator.of(context).pop(true),
+              child: Container(
+                padding: EdgeInsets.only(top: 32, bottom: 32, left: 16),
+                child: Icon(
+                  Icons.chevron_left,
+                  color: Colors.white,
+                  size: 32,
+                ),
+              ),
+            ),
+            Container(
+              padding: EdgeInsets.only(top: 32, bottom: 32, right: 16),
+              child: Text(
+                widget.searchedDescription,
+                style: restaurantCardTitleStyle,
+              ),
+            )
+          ],
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
+        resizeToAvoidBottomPadding: false,
         body: Stack(
           children: <Widget>[
             GoogleMap(
@@ -102,7 +147,7 @@ class _HomePageState extends State<HomePage> {
               zoomControlsEnabled: false,
               myLocationButtonEnabled: false,
             ),
-            MainSearch(),
+            _getTopThird(),
             LocationCards(restaurants: widget.restaurants),
           ],
         ),

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_complete_guide/models/restaurant.dart';
-import 'package:flutter_complete_guide/screens/home_page.dart';
-import 'package:flutter_complete_guide/services/restaurants_service.dart';
+import 'package:Convene/models/restaurant.dart';
+import 'package:Convene/screens/home_page.dart';
+import 'package:Convene/services/locaiton_service.dart';
+import 'package:Convene/services/restaurants_service.dart';
 import 'package:flutter_google_places/flutter_google_places.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_maps_webservice/places.dart';
@@ -21,6 +22,7 @@ class _MainSearchState extends State<MainSearch> {
   GoogleMapsPlaces _places = GoogleMapsPlaces(apiKey: kGoogleApiKey);
 
   RestaurantsService _restaurantsService = new RestaurantsService();
+  LocationService _locationService = new LocationService();
 
   @override
   void initState() {
@@ -51,8 +53,7 @@ class _MainSearchState extends State<MainSearch> {
 
       LatLng searchedLocation = LatLng(lat, lng);
 
-      //##### need to write location service and clean up splash page api calls #####
-      LatLng currentLocation = LatLng(51.4405, -0.1884);
+      var currentLocation = await _locationService.getCurrentLocation();
 
       LatLng middleLocation = await _restaurantsService.getInitalLocation(
           currentLocation, searchedLocation);
@@ -67,6 +68,7 @@ class _MainSearchState extends State<MainSearch> {
                   restaurants: restaurants,
                   intialLocation: middleLocation,
                   followUser: false,
+                  searchedDescription: p.description,
                 )),
       );
     }

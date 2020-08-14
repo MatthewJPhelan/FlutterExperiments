@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_complete_guide/models/global.dart';
+import 'package:Convene/models/global.dart';
 
 class ExpandableText extends StatefulWidget {
   ExpandableText(this.text);
@@ -15,7 +15,7 @@ class _ExpandableTextState extends State<ExpandableText> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.fromLTRB(16, 16, 16, 0),
+      margin: EdgeInsets.fromLTRB(16, 0, 16, 0),
       // margin: EdgeInsets.symmetric(vertical: 8, horizontal: 18),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

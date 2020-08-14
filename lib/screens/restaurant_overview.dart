@@ -2,11 +2,11 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_complete_guide/models/global.dart';
-import 'package:flutter_complete_guide/models/restaurant.dart';
-import 'package:flutter_complete_guide/widgets/LocationOverview/location_show_more.dart';
-import 'package:flutter_complete_guide/widgets/LocationOverview/location_types.dart';
-import 'package:flutter_complete_guide/widgets/LocationOverview/top_level_location.dart';
+import 'package:Convene/models/global.dart';
+import 'package:Convene/models/restaurant.dart';
+import 'package:Convene/widgets/LocationOverview/location_show_more.dart';
+import 'package:Convene/widgets/LocationOverview/location_types.dart';
+import 'package:Convene/widgets/LocationOverview/top_level_location.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 
@@ -80,6 +80,40 @@ class _RestaurantOverviewState extends State<RestaurantOverview> {
     return _markers;
   }
 
+  Widget getPriceLevel(priceLevel) {
+    if (priceLevel != null) {
+      return Container(
+        margin: EdgeInsets.only(top: 8.0),
+        padding: EdgeInsets.only(left: 8.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              margin: EdgeInsets.only(left: 16),
+              child: Text(
+                'Price Level',
+                style: locationTypeListTitleStyle,
+              ),
+            ),
+            Container(
+              padding: EdgeInsets.symmetric(vertical: 8, horizontal: 2),
+              child: Row(
+                children: List.generate(
+                  widget.restaurant.priceLevel,
+                  (index) => Icon(
+                    Icons.attach_money,
+                    color: Colors.tealAccent,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+    return Spacer();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -114,11 +148,11 @@ class _RestaurantOverviewState extends State<RestaurantOverview> {
                   ),
                 ),
                 Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     Container(
-                      margin: EdgeInsets.only(top: 180, left: 320),
+                      margin: EdgeInsets.only(
+                          top: 180,
+                          left: MediaQuery.of(context).size.width - 60),
                       padding: EdgeInsets.all(10),
                       height: 40,
                       decoration: BoxDecoration(
@@ -139,6 +173,7 @@ class _RestaurantOverviewState extends State<RestaurantOverview> {
                 children: <Widget>[
                   TopLevelLocation(restaurant: widget.restaurant),
                   LocationTypes(types: widget.restaurant.types),
+                  getPriceLevel(widget.restaurant.priceLevel),
                   ExpandableText(
                       "Lorem ipsum, or lipsum as it is sometimes known, is dummy text used in laying out print, graphic or web designs. The passage is attributed to an unknown typesetter in the 15th century who is thought to have scrambled parts of Cicero's De Finibus Bonorum et Malorum for use in a type specimen book."),
                   Container(
