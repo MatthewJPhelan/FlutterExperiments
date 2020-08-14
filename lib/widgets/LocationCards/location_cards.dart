@@ -17,20 +17,13 @@ class _LocationCardsState extends State<LocationCards> {
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.only(top: 512, bottom: 16),
-      child: ListView(
-        padding: EdgeInsets.only(left: 16),
-        children: getRestaurantsInArea(context),
-        scrollDirection: Axis.horizontal,
-      ),
+      child: ListView.builder(
+          padding: EdgeInsets.only(left: 16),
+          scrollDirection: Axis.horizontal,
+          itemCount: widget.restaurants.length,
+          itemBuilder: (BuildContext ctxt, int index) =>
+              restaurantCard(widget.restaurants[index], context)),
     );
-  }
-
-  List<Widget> getRestaurantsInArea(BuildContext context) {
-    List<Widget> cards = [];
-    for (Restaurant restaurant in widget.restaurants) {
-      cards.add(restaurantCard(restaurant, context));
-    }
-    return cards;
   }
 }
 

@@ -25,6 +25,8 @@ dependencies:
     sdk: flutter
   shimmer: ^1.1.1
   google_maps_flutter: ^0.5.27+3
+  google_maps_webservice: ^0.0.18
+  flutter_google_places: ^0.2.6
   location: ^2.3.5
   google_fonts: ^1.1.0
   smooth_star_rating: ^1.1.1
@@ -59,8 +61,6 @@ flutter:
   assets:
   #   - assets\fonts\MuseoModerno-Medium.ttf
     - assets/images/walkingTogether.jpg
-    - assets/images/burrata.jpg
-    - assets/data.json
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

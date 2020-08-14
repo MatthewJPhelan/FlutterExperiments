@@ -1,4 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_complete_guide/models/restaurant.dart';
+import 'package:flutter_complete_guide/screens/home_page.dart';
+import 'package:flutter_complete_guide/services/restaurants_service.dart';
+import 'package:flutter_google_places/flutter_google_places.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:google_maps_webservice/places.dart';
 
 class MainSearch extends StatefulWidget {
   const MainSearch({
@@ -11,6 +17,10 @@ class MainSearch extends StatefulWidget {
 
 class _MainSearchState extends State<MainSearch> {
   final myController = TextEditingController();
+  static const kGoogleApiKey = "API_KEY";
+  GoogleMapsPlaces _places = GoogleMapsPlaces(apiKey: kGoogleApiKey);
+
+  RestaurantsService _restaurantsService = new RestaurantsService();
 
   @override
   void initState() {
@@ -31,27 +41,58 @@ class _MainSearchState extends State<MainSearch> {
     print("Text field: ${myController.text}");
   }
 
+  Future<Null> displayPrediction(Prediction p) async {
+    if (p != null) {
+      PlacesDetailsResponse detail =
+          await _places.getDetailsByPlaceId(p.placeId);
+
+      double lat = detail.result.geometry.location.lat;
+      double lng = detail.result.geometry.location.lng;
+
+      LatLng searchedLocation = LatLng(lat, lng);
+
+      //##### need to write location service and clean up splash page api calls #####
+      LatLng currentLocation = LatLng(51.4405, -0.1884);
+
+      LatLng middleLocation = await _restaurantsService.getInitalLocation(
+          currentLocation, searchedLocation);
+
+      List<Restaurant> restaurants = await _restaurantsService
+          .getRestaurantsAsync(currentLocation, searchedLocation);
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => HomePage(
+                  restaurants: restaurants,
+                  intialLocation: middleLocation,
+                  followUser: false,
+                )),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.symmetric(
-        horizontal: 32,
-        vertical: 40,
+        horizontal: 16,
+        vertical: 54,
       ),
       child: Container(
         padding: EdgeInsets.only(left: 8, right: 16),
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.all(Radius.circular(8)),
+          borderRadius: BorderRadius.all(Radius.circular(2)),
         ),
         child: Container(
           child: Row(
             children: [
               Container(
-                padding: EdgeInsets.symmetric(horizontal: 12),
+                padding: EdgeInsets.fromLTRB(5, 2, 12, 2),
                 child: Icon(
                   Icons.search,
-                  color: Colors.grey[800],
+                  color: Colors.grey[600],
                   size: 24.0,
                 ),
               ),
@@ -60,12 +101,23 @@ class _MainSearchState extends State<MainSearch> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     TextField(
+                      onTap: () async {
+                        Prediction p = await PlacesAutocomplete.show(
+                            context: context,
+                            apiKey: kGoogleApiKey,
+                            mode: Mode.overlay, // Mode.fullscreen
+                            language: "en",
+                            components: [
+                              new Component(Component.country, "uk")
+                            ]);
+                        displayPrediction(p);
+                      },
                       controller: myController,
                       decoration: InputDecoration(
                         hintText: "Enter an address or landmark...",
                         hintStyle: TextStyle(
                             fontSize: 14.0,
-                            color: Colors.grey[300],
+                            color: Colors.grey[500],
                             fontFamily: 'Roboto'),
                         border: InputBorder.none,
                       ),

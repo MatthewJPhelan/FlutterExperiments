@@ -10,9 +10,10 @@ import 'package:location/location.dart';
 class HomePage extends StatefulWidget {
   final List<Restaurant> restaurants;
   final LatLng intialLocation;
+  final bool followUser;
   List<Marker> allMarkers = [];
 
-  HomePage({this.restaurants, this.intialLocation}) {
+  HomePage({this.restaurants, this.intialLocation, this.followUser: true}) {
     restaurants.forEach((element) {
       allMarkers.add(element.marker);
     });
@@ -45,21 +46,34 @@ class _HomePageState extends State<HomePage> {
   }
 
   void getCurrentLocation() async {
-    try {
-      if (_locationSubscription != null) {
-        _locationSubscription.cancel();
-      }
-
-      _locationSubscription =
-          _locationTracker.onLocationChanged().listen((newLocalData) {
-        if (mapController != null) {
-          mapController.animateCamera(
-              CameraUpdate.newCameraPosition(getCameraPosition(newLocalData)));
+    if (widget.followUser) {
+      try {
+        if (_locationSubscription != null) {
+          _locationSubscription.cancel();
         }
-      });
-    } on PlatformException catch (e) {
-      if (e.code == 'PERMISSION DENIED') {
-        debugPrint("Permission Denied");
+
+        _locationSubscription =
+            _locationTracker.onLocationChanged().listen((newLocalData) {
+          if (mapController != null) {
+            mapController.animateCamera(CameraUpdate.newCameraPosition(
+                getCameraPosition(newLocalData)));
+          }
+        });
+      } on PlatformException catch (e) {
+        if (e.code == 'PERMISSION DENIED') {
+          debugPrint("Permission Denied");
+        }
+      }
+    } else {
+      if (mapController != null) {
+        CameraPosition camerPostion = CameraPosition(
+            bearing: 192.8,
+            target: LatLng(widget.intialLocation.latitude,
+                widget.intialLocation.longitude),
+            tilt: 0,
+            zoom: 15);
+        mapController.animateCamera(
+            CameraUpdate.newCameraPosition(getCameraPosition(camerPostion)));
       }
     }
   }
