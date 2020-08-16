@@ -52,3 +52,9 @@ TextStyle locationTypeListTitleStyle = new TextStyle(
   color: Colors.grey[850],
   fontWeight: FontWeight.w800,
 );
+
+TextStyle appDrawerListStyle = new TextStyle(
+  fontFamily: 'Roboto',
+  fontSize: 18,
+  color: Colors.white,
+);
