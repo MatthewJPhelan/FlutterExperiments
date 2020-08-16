@@ -1,8 +1,11 @@
+import 'package:Convene/models/user_details.dart';
+import 'package:Convene/screens/login.dart';
 import 'package:flutter/material.dart';
 import 'package:Convene/models/restaurant.dart';
 import 'package:Convene/screens/home_page.dart';
 import 'package:Convene/services/locaiton_service.dart';
 import 'package:Convene/services/restaurants_service.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -16,6 +19,9 @@ class _SplashScreenState extends State<SplashScreen> {
   static LocationService _locationService = new LocationService();
   LatLng location;
   List<Restaurant> restaurants;
+  UserDetails userDetails;
+
+  final storage = new FlutterSecureStorage();
 
   @override
   void initState() {
@@ -23,27 +29,43 @@ class _SplashScreenState extends State<SplashScreen> {
 
     _setInitalData().then((status) {
       if (status) {
-        _navigateToHome(location, restaurants);
+        _checkIfLoggedIn().then((loggedIn) {
+          if (loggedIn) {
+            _getStoredValue().then((value) => {
+                  if (value) {_navigateToHome()}
+                });
+          } else {
+            _navigateToLogIn();
+          }
+        });
       }
     });
   }
 
-  // Future<bool> _checkForSession() async {
-  //   // ignore: todo
-  //   //TODO: Check for User Session - If logged in return true else return false.
+  Future<bool> _getStoredValue() async {
+    try {
+      String providerDetails = await storage.read(key: "provideId");
+      String userName = await storage.read(key: "displayName");
+      String photoUrl = await storage.read(key: "photoUrl");
+      String userEmail = await storage.read(key: "email");
 
-  //   final response = await http.get(
-  //       "https://maps.googleapis.com/maps/api/place/nearbysearch/json?key=API_KEY&location=${lat},${lng}&rankby=distance&keyword=restaurant");
+      userDetails =
+          new UserDetails(providerDetails, userName, photoUrl, userEmail);
+    } catch (e) {
+      throw Exception("An error occured getting user data");
+    }
+    return true;
+  }
 
-  //   if (response.statusCode == 200) {
-  //     final Map<String, dynamic> data = json.decode(response.body);
-  //     handleResponse(data['results']);
-  //   } else {
-  //     throw Exception('An error occurred getting places nearby');
-  //   }
+  Future<bool> _checkIfLoggedIn() async {
+    final response = await storage.read(key: "email");
 
-  //   return true;
-  // }
+    if (response != null) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 
   Future<bool> _setInitalData() async {
     try {
@@ -63,9 +85,18 @@ class _SplashScreenState extends State<SplashScreen> {
     return await _restaurantsService.getRestaurantsAsync(location);
   }
 
-  void _navigateToHome(LatLng location, List<Restaurant> restaurants) {
+  void _navigateToHome() {
     Navigator.of(context).pushReplacement(MaterialPageRoute(
         builder: (BuildContext context) => HomePage(
+              restaurants: restaurants,
+              intialLocation: location,
+              userDetails: userDetails,
+            )));
+  }
+
+  void _navigateToLogIn() {
+    Navigator.of(context).pushReplacement(MaterialPageRoute(
+        builder: (BuildContext context) => LogInPage(
               restaurants: restaurants,
               intialLocation: location,
             )));

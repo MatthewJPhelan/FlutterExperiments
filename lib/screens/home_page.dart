@@ -1,4 +1,7 @@
 import 'dart:async';
+import 'package:Convene/models/user_details.dart';
+import 'package:Convene/widgets/AppDrawer/app_drawer.dart';
+import 'package:firebase_performance/firebase_performance.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:Convene/models/global.dart';
@@ -11,6 +14,7 @@ import 'package:location/location.dart';
 class HomePage extends StatefulWidget {
   final List<Restaurant> restaurants;
   final LatLng intialLocation;
+  final UserDetails userDetails;
   final bool followUser;
   final String searchedDescription;
   List<Marker> allMarkers = [];
@@ -18,6 +22,7 @@ class HomePage extends StatefulWidget {
   HomePage(
       {this.restaurants,
       this.intialLocation,
+      this.userDetails,
       this.followUser: true,
       this.searchedDescription: ''}) {
     restaurants.forEach((element) {
@@ -30,13 +35,17 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   GoogleMapController mapController;
   StreamSubscription _locationSubscription;
   Location _locationTracker = Location();
+  Trace trace = FirebasePerformance.instance.newTrace('test traceroony');
 
   void initState() {
-    super.initState();
+    trace.start();
     getCurrentLocation();
+    super.initState();
+    trace.stop();
   }
 
   void _onMapCreated(GoogleMapController controller) {
@@ -93,7 +102,7 @@ class _HomePageState extends State<HomePage> {
 
   Widget _getTopThird() {
     if (widget.followUser) {
-      return MainSearch();
+      return MainSearch(scaffoldKey: scaffoldKey);
     } else {
       return Container(
         decoration: BoxDecoration(
@@ -133,7 +142,11 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
+        key: scaffoldKey,
         resizeToAvoidBottomPadding: false,
+        drawer: AppDrawer(
+          userDetails: widget.userDetails,
+        ),
         body: Stack(
           children: <Widget>[
             GoogleMap(

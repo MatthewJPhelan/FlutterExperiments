@@ -23,13 +23,21 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_secure_storage: ^3.3.3
   shimmer: ^1.1.1
   google_maps_flutter: ^0.5.27+3
   google_maps_webservice: ^0.0.18
   flutter_google_places: ^0.2.6
   location: ^2.3.5
   google_fonts: ^1.1.0
+  font_awesome_flutter: ^8.8.1
+  google_sign_in: ^4.5.1
   smooth_star_rating: ^1.1.1
+  firebase_core: ^0.4.5
+  firebase_auth: ^0.16.1
+  firebase_analytics: ^5.0.16
+  firebase_performance: ^0.3.2
+
 
 
   # The following adds the Cupertino Icons font to your application.

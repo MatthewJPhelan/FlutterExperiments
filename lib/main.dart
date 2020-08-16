@@ -1,8 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:Convene/screens/splash_screen.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 
-void main() => runApp(MyApp());
+FirebaseAnalytics analytics;
+
+void main() {
+  analytics = FirebaseAnalytics();
+  runApp(MyApp());
+}
 
 class MyApp extends StatefulWidget {
   @override

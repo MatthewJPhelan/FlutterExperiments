@@ -111,7 +111,7 @@ class _RestaurantOverviewState extends State<RestaurantOverview> {
         ),
       );
     }
-    return Spacer();
+    return Container();
   }
 
   @override
