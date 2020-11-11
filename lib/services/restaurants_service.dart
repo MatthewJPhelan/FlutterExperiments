@@ -44,11 +44,23 @@ class RestaurantsService {
     final location = await getInitalLocation(currentLocation, searchedLocation);
 
     final response = await http.get(
-        "https://maps.googleapis.com/maps/api/place/nearbysearch/json?key=API_KEY&location=${location.latitude},${location.longitude}&rankby=distance&keyword=restaurant");
+        "https://maps.googleapis.com/maps/api/place/nearbysearch/json?key=[API_KEY]&location=${location.latitude},${location.longitude}&rankby=distance&keyword=restaurant");
 
     if (response.statusCode == 200) {
       final Map<String, dynamic> data = json.decode(response.body);
       return handleResponse(data['results']);
+    } else {
+      throw Exception('An error occurred getting places nearby');
+    }
+  }
+
+  Future<Restaurant> getRestaurantById(String placeId) async {
+    final response = await http.get(
+        "https://maps.googleapis.com/maps/api/place/nearbysearch/json?key=[API_KEY]&placeid=${placeId}");
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> data = json.decode(response.body);
+      return createRestaurant(data['results']);
     } else {
       throw Exception('An error occurred getting places nearby');
     }
@@ -60,7 +72,7 @@ class RestaurantsService {
 
   NetworkImage getProfilePic(String profilePicString) {
     return NetworkImage(
-        "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${profilePicString}&key=API_KEY");
+        "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${profilePicString}&key=[API_KEY]");
   }
 
   Marker getMarker(String placeId, dynamic element) {
@@ -84,31 +96,69 @@ class RestaurantsService {
     return type.replaceAll(new RegExp('[\\W_]+'), ' ').toUpperCase();
   }
 
+  Restaurant createRestaurant(element) {
+    Restaurant restaurant;
+    NetworkImage profilePic = element['photos'] == null
+        ? null
+        : getProfilePic(element['photos'][0]["photo_reference"]);
+    if (profilePic != null && element['business_status'] == "OPERATIONAL") {
+      restaurant = new Restaurant(
+        placeId: element['place_id'],
+        icon: getIcon(element['icon']),
+        name: element['name'],
+        openNow: findIfOpen(element['opening_hours']),
+        priceLevel: element['price_level'],
+        rating: element['rating'].toDouble(),
+        types: element['types'].cast<String>(),
+        phoneNum: "077777777777",
+        vicinity: element['vicinity'],
+        marker: getMarker(
+          element['place_id'],
+          element['geometry']['location'],
+        ),
+        profilePic: getProfilePic(element['photos'][0]["photo_reference"]),
+        cuisine: removeStopCharacters(element['types'][0]),
+      );
+    } else {
+      print("element: $element");
+    }
+
+    return restaurant;
+  }
+
+  Restaurant createFavouriteRestaurant(element) {
+    Restaurant restaurant;
+
+    restaurant = new Restaurant(
+      placeId: element['place_id'],
+      icon: NetworkImage(element['icon']),
+      name: element['name'],
+      openNow: element['open_now'],
+      priceLevel: element['price_level'],
+      rating: element['rating'],
+      types: json.decode(element['types']).cast<String>(),
+      phoneNum: "077777777777",
+      vicinity: element['vicinity'],
+      marker: getMarker(
+        element['place_id'],
+        element,
+      ),
+      profilePic: NetworkImage(element["profile_pic"]),
+      cuisine: element['cuisine'],
+    );
+
+    return restaurant;
+  }
+
   List<Restaurant> handleResponse(List map) {
     List<Restaurant> restaurants = new List<Restaurant>();
 
     map.forEach((element) {
       Restaurant restaurant;
-      if (element['photos'] != null) {
-        restaurant = new Restaurant(
-          placeId: element['place_id'],
-          icon: getIcon(element['icon']),
-          name: element['name'],
-          openNow: findIfOpen(element['opening_hours']),
-          priceLevel: element['price_level'],
-          rating: element['rating'].toDouble(),
-          types: element['types'].cast<String>(),
-          phoneNum: "077777777777",
-          vicinity: element['vicinity'],
-          marker: getMarker(
-            element['place_id'],
-            element['geometry']['location'],
-          ),
-          profilePic: getProfilePic(element['photos'][0]["photo_reference"]),
-          cuisine: removeStopCharacters(element['types'][0]),
-        );
-        restaurants.add(restaurant);
-      }
+
+      restaurant = createRestaurant(element);
+
+      restaurants.add(restaurant);
     });
 
     return restaurants;

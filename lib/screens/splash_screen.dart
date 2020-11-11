@@ -1,5 +1,6 @@
 import 'package:Convene/models/user_details.dart';
 import 'package:Convene/screens/login.dart';
+import 'package:Convene/screens/onboard.dart';
 import 'package:flutter/material.dart';
 import 'package:Convene/models/restaurant.dart';
 import 'package:Convene/screens/home_page.dart';
@@ -7,6 +8,7 @@ import 'package:Convene/services/locaiton_service.dart';
 import 'package:Convene/services/restaurants_service.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shimmer/shimmer.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -35,7 +37,9 @@ class _SplashScreenState extends State<SplashScreen> {
                   if (value) {_navigateToHome()}
                 });
           } else {
-            _navigateToLogIn();
+            _checkIfOnboarded().then((value) => {
+                  if (value) {_navigateToLogIn()} else {_navigateToOnboard()}
+                });
           }
         });
       }
@@ -57,13 +61,30 @@ class _SplashScreenState extends State<SplashScreen> {
     return true;
   }
 
-  Future<bool> _checkIfLoggedIn() async {
-    final response = await storage.read(key: "email");
+  Future<bool> _checkIfOnboarded() async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    if (response != null) {
-      return true;
-    } else {
-      return false;
+      if (prefs.containsKey("onboarded")) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      throw Exception("An error occured getting user data");
+    }
+  }
+
+  Future<bool> _checkIfLoggedIn() async {
+    try {
+      final response = await storage.read(key: "email");
+      if (response != null) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      throw Exception('An error occurred getting places nearby: $e');
     }
   }
 
@@ -97,6 +118,14 @@ class _SplashScreenState extends State<SplashScreen> {
   void _navigateToLogIn() {
     Navigator.of(context).pushReplacement(MaterialPageRoute(
         builder: (BuildContext context) => LogInPage(
+              restaurants: restaurants,
+              intialLocation: location,
+            )));
+  }
+
+  void _navigateToOnboard() {
+    Navigator.of(context).pushReplacement(MaterialPageRoute(
+        builder: (BuildContext context) => Onboard(
               restaurants: restaurants,
               intialLocation: location,
             )));

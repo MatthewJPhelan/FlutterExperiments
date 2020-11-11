@@ -29,11 +29,15 @@ class TopLevelLocation extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  restaurant.name,
-                  style: restaurantOverviewTitleStyle,
+                Container(
+                  width: MediaQuery.of(context).size.width * 0.65,
+                  child: Text(
+                    restaurant.name,
+                    style: restaurantOverviewTitleStyle,
+                  ),
                 ),
                 Container(
+                  width: MediaQuery.of(context).size.width * 0.65,
                   margin: EdgeInsets.only(top: 4),
                   child: Text(
                     restaurant.cuisine,

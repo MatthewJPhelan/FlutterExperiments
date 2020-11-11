@@ -24,7 +24,7 @@ class _LogInPageState extends State<LogInPage> {
   final GoogleSignIn _googleSignIn = new GoogleSignIn();
   final storage = new FlutterSecureStorage();
 
-  Future<FirebaseUser> _signIn(BuildContext context) async {
+  Future<User> _signIn(BuildContext context) async {
     Scaffold.of(context).showSnackBar(
       new SnackBar(
         content: new Text('Sign in'),
@@ -35,28 +35,29 @@ class _LogInPageState extends State<LogInPage> {
     final GoogleSignInAuthentication googleAuth =
         await googleUser.authentication;
 
-    final AuthCredential credential = GoogleAuthProvider.getCredential(
+    final AuthCredential credential = GoogleAuthProvider.credential(
         idToken: googleAuth.idToken, accessToken: googleAuth.accessToken);
 
-    AuthResult userDetails =
+    UserCredential userDetails =
         await _firebaseAuth.signInWithCredential(credential);
     ProviderDetails providerDetails =
-        new ProviderDetails(userDetails.user.providerId);
+        new ProviderDetails(userDetails.user.providerData.first.uid);
 
     List<ProviderDetails> providerData = new List<ProviderDetails>();
     providerData.add(providerDetails);
 
     UserDetails details = new UserDetails(
-        userDetails.user.providerId,
+        userDetails.user.providerData.first.uid,
         userDetails.user.displayName,
-        userDetails.user.photoUrl,
+        userDetails.user.photoURL,
         userDetails.user.email,
         providerData);
 
-    await storage.write(key: "providerId", value: userDetails.user.providerId);
+    await storage.write(
+        key: "providerId", value: userDetails.user.providerData.first.uid);
     await storage.write(
         key: "displayName", value: userDetails.user.displayName);
-    await storage.write(key: "photoUrl", value: userDetails.user.photoUrl);
+    await storage.write(key: "photoUrl", value: userDetails.user.photoURL);
     await storage.write(key: "email", value: userDetails.user.email);
 
     Navigator.push(
@@ -98,14 +99,14 @@ class _LogInPageState extends State<LogInPage> {
                     alignment: Alignment.center,
                     child: RaisedButton(
                         shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30)),
+                            borderRadius: BorderRadius.circular(16)),
                         color: Color(0xffffffff),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             Icon(
                               FontAwesomeIcons.google,
-                              color: Color(0xffCE107C),
+                              color: Colors.grey[850],
                             ),
                             SizedBox(
                               width: 10,
@@ -118,7 +119,7 @@ class _LogInPageState extends State<LogInPage> {
                           ],
                         ),
                         onPressed: () => _signIn(context)
-                            .then((FirebaseUser user) => print(user))
+                            .then((User user) => print(user))
                             .catchError((e) => print(e))),
                   ),
                 )

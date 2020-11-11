@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
@@ -28,4 +30,22 @@ class Restaurant {
       this.marker,
       this.profilePic,
       this.cuisine});
+
+  Map<String, dynamic> toMap() {
+    return {
+      'place_id': placeId,
+      'icon': icon.url,
+      'name': name,
+      'open_now': openNow,
+      'price_level': priceLevel,
+      'rating': rating,
+      'types': json.encode(types),
+      'phone_num': phoneNum,
+      'vicinity': vicinity,
+      'lat': marker.position.latitude,
+      'lng': marker.position.longitude,
+      'profile_pic': profilePic.url,
+      'cuisine': cuisine
+    };
+  }
 }

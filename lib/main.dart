@@ -1,11 +1,15 @@
+import 'package:Convene/services/push_notifications_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:Convene/screens/splash_screen.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 FirebaseAnalytics analytics;
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   analytics = FirebaseAnalytics();
   runApp(MyApp());
 }
@@ -16,6 +20,15 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  final PushNotificationsService _pushNotificationsService =
+      new PushNotificationsService();
+
+  @override
+  void initState() {
+    super.initState();
+    _pushNotificationsService.initialise();
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:Convene/models/restaurant.dart';
 import 'package:Convene/screens/home_page.dart';
@@ -18,7 +20,7 @@ class MainSearch extends StatefulWidget {
 
 class _MainSearchState extends State<MainSearch> {
   final myController = TextEditingController();
-  static const kGoogleApiKey = "API_KEY";
+  static const kGoogleApiKey = "[API_KEY]";
   GoogleMapsPlaces _places = GoogleMapsPlaces(apiKey: kGoogleApiKey);
 
   RestaurantsService _restaurantsService = new RestaurantsService();
@@ -43,6 +45,48 @@ class _MainSearchState extends State<MainSearch> {
     print("Text field: ${myController.text}");
   }
 
+  void storeSearch(LatLng currentLocation, LatLng searched, LatLng midPont,
+      String description) {
+    Map<String, dynamic> searchedMap = {
+      "initialdescription": description,
+      "datesearched": DateTime.now(),
+      "current": {
+        "Lat": currentLocation.latitude,
+        "long": currentLocation.longitude
+      },
+      "searched": {
+        "Lat": searched.latitude,
+        "long": searched.longitude,
+      },
+      "midpoint": {
+        "Lat": midPont.latitude,
+        "long": midPont.longitude,
+      },
+    };
+
+    final FirebaseAuth _auth = FirebaseAuth.instance;
+    final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+    User user = _auth.currentUser;
+
+    double searchIdSum =
+        (num.parse(currentLocation.latitude.toStringAsFixed(3)) *
+                num.parse(currentLocation.longitude.toStringAsFixed(3))) *
+            (num.parse(searched.latitude.toStringAsFixed(3)) *
+                num.parse(searched.longitude.toStringAsFixed(3)));
+    String searchId = (searchIdSum * searchIdSum * searchIdSum * searchIdSum)
+        .floor()
+        .toString();
+    debugPrint(user.uid);
+
+    DocumentReference ref = _firestore
+        .collection('users')
+        .doc(user.uid)
+        .collection('searched')
+        .doc(searchId);
+
+    ref.set(searchedMap);
+  }
+
   Future<Null> displayPrediction(Prediction p) async {
     if (p != null) {
       PlacesDetailsResponse detail =
@@ -53,10 +97,16 @@ class _MainSearchState extends State<MainSearch> {
 
       LatLng searchedLocation = LatLng(lat, lng);
 
-      var currentLocation = await _locationService.getCurrentLocation();
+      LatLng currentLocation = await _locationService.getCurrentLocation();
 
       LatLng middleLocation = await _restaurantsService.getInitalLocation(
           currentLocation, searchedLocation);
+
+      String searchedDescription = await _locationService.getSematicLocation(
+          middleLocation.latitude, middleLocation.longitude);
+
+      storeSearch(
+          currentLocation, searchedLocation, middleLocation, p.description);
 
       List<Restaurant> restaurants = await _restaurantsService
           .getRestaurantsAsync(currentLocation, searchedLocation);
@@ -68,7 +118,7 @@ class _MainSearchState extends State<MainSearch> {
                   restaurants: restaurants,
                   intialLocation: middleLocation,
                   followUser: false,
-                  searchedDescription: p.description,
+                  searchedDescription: searchedDescription,
                 )),
       );
     }
@@ -89,6 +139,7 @@ class _MainSearchState extends State<MainSearch> {
             icon: Icon(
               Icons.menu,
               color: Colors.grey[800],
+              size: 32,
             ),
             onPressed: () => _getDataAndOpenDrawer(),
           ),
@@ -103,7 +154,14 @@ class _MainSearchState extends State<MainSearch> {
             padding: EdgeInsets.only(left: 8, right: 16),
             decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.all(Radius.circular(2)),
+              borderRadius: BorderRadius.all(Radius.circular(8)),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey[350],
+                  blurRadius: 12,
+                  offset: Offset(-4, 4),
+                )
+              ],
             ),
             child: Container(
               child: Row(

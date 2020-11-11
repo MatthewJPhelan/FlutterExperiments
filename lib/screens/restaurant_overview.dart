@@ -9,6 +9,10 @@ import 'package:Convene/widgets/LocationOverview/location_types.dart';
 import 'package:Convene/widgets/LocationOverview/top_level_location.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
+import 'package:like_button/like_button.dart';
+import 'package:share/share.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class RestaurantOverview extends StatefulWidget {
   final Restaurant restaurant;
@@ -65,6 +69,40 @@ class _RestaurantOverviewState extends State<RestaurantOverview> {
       _locationSubscription.cancel();
     }
     super.dispose();
+  }
+
+  Future<bool> onLikeButtonTapped(bool isLiked) async {
+    var like = !isLiked;
+    var restaurant = widget.restaurant;
+    var restaurantMap = restaurant.toMap();
+
+    final FirebaseAuth _auth = FirebaseAuth.instance;
+    final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+    User user = _auth.currentUser;
+
+    debugPrint(user.uid);
+
+    DocumentReference ref = _firestore
+        .collection('users')
+        .doc(user.uid)
+        .collection('favourites')
+        .doc(restaurant.placeId);
+
+    if (like) {
+      ref.set(restaurantMap);
+    } else {
+      ref.delete();
+    }
+
+    return like;
+  }
+
+  void _onShareButtonTapped() {
+    var rest = widget._center;
+
+    Share.share(
+        'Shall we Convene here? https://www.google.com/maps/search/?api=1&query=${rest.latitude},${rest.longitude}&query_place_id=${widget.restaurant.placeId}');
   }
 
   Set<Marker> getMarkers() {
@@ -147,24 +185,47 @@ class _RestaurantOverviewState extends State<RestaurantOverview> {
                     ),
                   ),
                 ),
-                Column(
-                  children: [
-                    Container(
-                      margin: EdgeInsets.only(
-                          top: 180,
-                          left: MediaQuery.of(context).size.width - 60),
-                      padding: EdgeInsets.all(10),
-                      height: 40,
-                      decoration: BoxDecoration(
-                        color: Colors.red,
-                        borderRadius: BorderRadius.circular(50),
-                      ),
-                      child: Image(
-                        color: Colors.white,
-                        image: widget.restaurant.icon,
-                      ),
+                GestureDetector(
+                  onTap: _onShareButtonTapped,
+                  child: Container(
+                    margin: EdgeInsets.only(
+                        top: 180, left: MediaQuery.of(context).size.width - 60),
+                    child: Icon(
+                      Icons.share,
+                      color: Colors.white,
+                      size: 32,
                     ),
-                  ],
+                  ),
+                ),
+                Container(
+                  width: 40,
+                  margin: EdgeInsets.only(
+                      top: 180, left: MediaQuery.of(context).size.width - 100),
+                  child: LikeButton(
+                    onTap: onLikeButtonTapped,
+                    size: 32,
+                    circleColor:
+                        CircleColor(start: Colors.white, end: Colors.white),
+                    bubblesColor: BubblesColor(
+                      dotPrimaryColor: Colors.white,
+                      dotSecondaryColor: Colors.red,
+                    ),
+                    likeBuilder: (bool isLiked) {
+                      if (isLiked) {
+                        return Icon(
+                          Icons.favorite,
+                          color: Colors.red,
+                          size: 32,
+                        );
+                      } else {
+                        return Icon(
+                          Icons.favorite_border,
+                          color: Colors.white,
+                          size: 32,
+                        );
+                      }
+                    },
+                  ),
                 ),
               ],
             ),
@@ -174,8 +235,11 @@ class _RestaurantOverviewState extends State<RestaurantOverview> {
                   TopLevelLocation(restaurant: widget.restaurant),
                   LocationTypes(types: widget.restaurant.types),
                   getPriceLevel(widget.restaurant.priceLevel),
-                  ExpandableText(
-                      "Lorem ipsum, or lipsum as it is sometimes known, is dummy text used in laying out print, graphic or web designs. The passage is attributed to an unknown typesetter in the 15th century who is thought to have scrambled parts of Cicero's De Finibus Bonorum et Malorum for use in a type specimen book."),
+                  // Container(
+                  //   margin: EdgeInsets.only(top: 8.0),
+                  //   child: ExpandableText(
+                  //       "Lorem ipsum, or lipsum as it is sometimes known, is dummy text used in laying out print, graphic or web designs. The passage is attributed to an unknown typesetter in the 15th century who is thought to have scrambled parts of Cicero's De Finibus Bonorum et Malorum for use in a type specimen book."),
+                  // ),
                   Container(
                     margin: EdgeInsets.only(left: 16.0, bottom: 8),
                     child: Column(
@@ -184,7 +248,7 @@ class _RestaurantOverviewState extends State<RestaurantOverview> {
                         Container(
                           margin: EdgeInsets.only(left: 8),
                           child: Text(
-                            "Adress",
+                            "Address",
                             style: locationTypeListTitleStyle,
                           ),
                         ),

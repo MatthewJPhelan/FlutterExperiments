@@ -48,13 +48,25 @@ TextStyle locationTypeListStyle = new TextStyle(
 
 TextStyle locationTypeListTitleStyle = new TextStyle(
   fontFamily: 'Roboto',
-  fontSize: 14,
+  fontSize: 16,
   color: Colors.grey[850],
   fontWeight: FontWeight.w800,
 );
 
 TextStyle appDrawerListStyle = new TextStyle(
   fontFamily: 'Roboto',
-  fontSize: 18,
+  fontSize: 16,
   color: Colors.white,
+);
+
+TextStyle onboardingTitleStyleStyle = new TextStyle(
+  fontFamily: 'Roboto',
+  fontSize: 28,
+  color: Colors.grey[850],
+);
+
+TextStyle onboardingContentStyleStyle = new TextStyle(
+  fontFamily: 'Roboto',
+  fontSize: 16,
+  color: Colors.grey[850],
 );
